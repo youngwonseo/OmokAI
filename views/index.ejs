@@ -1,0 +1,213 @@
+<html>
+    <style>
+        #go-board{
+            float:left;
+            z-index:0;
+            width:722px;
+            height:720px;
+            background-image:url('/images/board.jpg');
+        }
+
+        #dashboard{
+            float:left;
+            width:50%
+        }
+
+        #dashboard > div{
+            float:left;
+            
+            
+        }
+        #stoneDiv .stone{            
+            width:36px;
+            height:36px;
+            position:absolute;
+            z-index:100;
+            border-radius: 18px;
+        }
+
+        .black{
+            background-color: black;
+        }
+
+        .white{
+            background-color: white;
+        }
+   
+    </style>
+    <body>
+        
+        
+        <div id="go-board"></div>        
+        <div id="stoneDiv">
+            <!-- <div class="stone black" style="top:90;left:52;"></div>
+            <div class="stone white" style="top:90;left:90;"></div>
+            <div class="stone white" style="top:14;left:14;"></div> -->
+        </div>
+        <div id="dashboard">
+            <div>
+                    <h2>WHITE</h2>
+                    <canvas id="canvas-white"></canvas>
+                    <div></div>
+            </div>
+            <div>
+                    <h2>BLACK</h2>
+                    <canvas id="canvas-black"></canvas>
+                    <div></div>
+            </div>
+            <div>
+                <h1>State</h1>
+
+            </div>
+            
+
+        </div>
+        
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="crossorigin="anonymous"></script>
+        <script src="/js/chart.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        
+
+        <script>
+
+            function minMax(node,depth,maximizingPalyer){
+                if(depth == 0 || false){
+                    return 0;
+                }
+
+                if(maximizingPalyer){
+                    val = minMax(child)
+                }else{
+
+                }
+                
+                
+            }
+
+
+
+
+            window.onload = function(){
+                var socket = io.connect();
+                socket.on('draw',function(data){
+                    console.log(data);
+                    darwStone(data.x,data.y,data.color);
+                });
+
+
+
+
+
+                            
+                
+                var distOfPoint = 37;
+                var start = 14;
+
+                document.getElementById('go-board').onclick = function(e){
+                    var board = document.getElementById('go-board');             
+
+                    var x = parseInt((e.pageX - board.offsetLeft) / distOfPoint),
+                        y = parseInt((e.pageY - board.offsetTop) / distOfPoint);
+
+                    //document.getElementById('stoneDiv').appendChild(darwStone(x,y));
+                    socket.emit('go',{x:x,y:y});
+                }
+            
+
+                function darwStone(x,y,color){
+                    var div = document.createElement('div');
+                    div.className = 'stone ' + color;
+                    div.style.top = y * distOfPoint + start;
+                    div.style.left = x * distOfPoint + start;
+                    document.getElementById('stoneDiv').appendChild(div);
+                    
+                }
+
+
+                var ctx = document.getElementById("canvas-white");
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: '# of Votes',
+                            data: [],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+
+                var ctx = document.getElementById("canvas-black");
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: '# of Votes',
+                            data: [],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+
+
+            }
+
+
+
+      
+    
+        </script>
+    </body>
+</html>
