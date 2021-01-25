@@ -7,7 +7,7 @@ var express = require('express'),
 
 
 
-var redisClient = redis.createClient(6379,'IP',{password:'1111'});
+var redisClient = redis.createClient();
 // app.use(function(req,res,next){
 //     req.cache = redisClient;
 //     next();
